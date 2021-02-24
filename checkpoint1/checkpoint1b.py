@@ -28,20 +28,18 @@ def remove_percents(df, col):
     return df
 
 def fill_zero_iron(df):
-    df = df["Iron (% DV)"].replace({np.nan: "0"}, inplace=True)
+    df = df['Iron (% DV)'].replace({np.nan: "0"}, inplace=True)
     return df
     
 def fix_caffeine(df):
-    #df.loc[df["Caffeine (mg)"] == 0] = df["Caffeine (mg)"].mean()
-    #df.loc[df["Caffeine (mg)"] == "varies"] = df["Caffeine (mg)"].mean()
-    #mean = str(df["Caffeine (mg)"].mean())
-    df['Caffeine(mg)'].replace({"0": ""}, inplace=True)
-    df["Caffeine(mg)"].replace({"varies": ""}, inplace=True)
+    df['Caffeine (mg)'] = df['Caffeine (mg)'].astype(int, errors='ignore')
+    df['Caffeine (mg)'] = df['Caffeine (mg)'].apply(lambda x: np.NaN if type(x) == str else x)
+    df = df["Caffeine (mg)"].replace({np.nan: "0"}, inplace=True)
     return df
 
 def standardize_names(df):
-    df.columns.str.lower()
-    df.columns.str.replace(r" \(.*\)","")
+    df.columns = df.columns.str.lower()
+    df.columns = df.columns.str.replace(r" \(.*\)","")
     return df
 
 def fix_strings(df, col):
@@ -82,7 +80,7 @@ def main():
     
     # now that the data is all clean, save your output to the `data` folder as 'starbucks_clean.csv'
     # you will use this file in checkpoint 2
-    
+    df.to_csv('../data/starbucks_clean.csv')
     
 
 if __name__ == "__main__":
